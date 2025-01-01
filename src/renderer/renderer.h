@@ -2,19 +2,35 @@
 #define RENDERER_H
 
 #include <wchar.h>
+#include <stdbool.h>
 
-struct ViewState
+struct RenderBuffer
 {
   int width;
   int height;
-  wchar_t *cells;
+  wchar_t *chars;
 };
 
-void initializeViewState(struct ViewState *view, int width, int height);
-void freeViewState(struct ViewState *view);
-void addChar(struct ViewState *view, int x, int y, wchar_t c);
-void clearChar(struct ViewState *view, int x, int y);
-void drawViewBorder(struct ViewState *view);
-void render(struct ViewState *view);
+struct RenderUnit
+{
+  wchar_t c;
+  int x;
+  int y;
+};
+
+struct Shape
+{
+  struct RenderUnit *units;
+  int unitCount;
+};
+
+void initRenderBuffer(struct RenderBuffer *buffer, int width, int height, bool border);
+void freeRenderBuffer(struct RenderBuffer *buffer);
+
+struct Shape addShape(struct RenderBuffer *buffer, const wchar_t *shapeStr, int x, int y);
+void translateShape(struct RenderBuffer *buffer, struct Shape *shape, int dx, int dy);
+void freeShape(struct Shape *shape);
+
+void render(struct RenderBuffer *buffer);
 
 #endif
