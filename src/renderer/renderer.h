@@ -11,25 +11,29 @@ struct RenderBuffer
   wchar_t *chars;
 };
 
-struct RenderUnit
+struct RenderPixel
 {
   wchar_t c;
   int x;
   int y;
 };
 
-struct Shape
+struct RenderShape
 {
-  struct RenderUnit *units;
-  int unitCount;
+  struct RenderPixel *pixels;
+  int pixelCount;
 };
 
-void initRenderBuffer(struct RenderBuffer *buffer, int width, int height, bool border);
-void freeRenderBuffer(struct RenderBuffer *buffer);
+struct RenderBuffer createRenderBuffer(int width, int height, bool border);
+void clearRenderBuffer(struct RenderBuffer *buffer, bool border);
+bool inBounds(struct RenderBuffer *buffer, int x, int y, bool border);
+void addChar(struct RenderBuffer *buffer, int x, int y, wchar_t c);
+void clearChar(struct RenderBuffer *buffer, int x, int y);
+struct RenderShape addShape(struct RenderBuffer *buffer, const wchar_t *shapeStr, int x, int y);
+void translateShape(struct RenderBuffer *buffer, struct RenderShape *shape, int dx, int dy);
 
-struct Shape addShape(struct RenderBuffer *buffer, const wchar_t *shapeStr, int x, int y);
-void translateShape(struct RenderBuffer *buffer, struct Shape *shape, int dx, int dy);
-void freeShape(struct Shape *shape);
+void freeRenderBuffer(struct RenderBuffer *buffer);
+void freeShape(struct RenderShape *shape);
 
 void render(struct RenderBuffer *buffer);
 
