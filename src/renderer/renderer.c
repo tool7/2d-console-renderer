@@ -12,7 +12,7 @@ bool inBounds(struct RenderBuffer *buffer, int x, int y, bool border)
     return x >= 0 && x < buffer->width && y >= 0 && y < buffer->height;
 }
 
-void addChar(struct RenderBuffer *buffer, int x, int y, wchar_t c)
+void addChar(struct RenderBuffer *buffer, int x, int y, char c)
 {
   if (!inBounds(buffer, x, y, false))
     return;
@@ -22,24 +22,24 @@ void addChar(struct RenderBuffer *buffer, int x, int y, wchar_t c)
 
 void clearChar(struct RenderBuffer *buffer, int x, int y)
 {
-  addChar(buffer, x, y, L' ');
+  addChar(buffer, x, y, ' ');
 }
 
 void _addBorder(struct RenderBuffer *buffer)
 {
   for (int x = 0; x < buffer->width; x++)
-    addChar(buffer, x, 0, L'─');
+    addChar(buffer, x, 0, '-');
   for (int x = 0; x < buffer->width; x++)
-    addChar(buffer, x, buffer->height - 1, L'─');
+    addChar(buffer, x, buffer->height - 1, '-');
   for (int y = 0; y < buffer->height; y++)
-    addChar(buffer, 0, y, L'│');
+    addChar(buffer, 0, y, '|');
   for (int y = 0; y < buffer->height; y++)
-    addChar(buffer, buffer->width - 1, y, L'│');
+    addChar(buffer, buffer->width - 1, y, '|');
 
-  addChar(buffer, 0, 0, L'┌');
-  addChar(buffer, buffer->width - 1, 0, L'┐');
-  addChar(buffer, 0, buffer->height - 1, L'└');
-  addChar(buffer, buffer->width - 1, buffer->height - 1, L'┘');
+  addChar(buffer, 0, 0, '+');
+  addChar(buffer, buffer->width - 1, 0, '+');
+  addChar(buffer, 0, buffer->height - 1, '+');
+  addChar(buffer, buffer->width - 1, buffer->height - 1, '+');
 }
 
 struct RenderBuffer createRenderBuffer(int width, int height, bool border)
@@ -47,11 +47,11 @@ struct RenderBuffer createRenderBuffer(int width, int height, bool border)
   struct RenderBuffer buffer;
   buffer.width = width;
   buffer.height = height;
-  buffer.chars = (wchar_t *)malloc(width * height * sizeof(wchar_t));
+  buffer.chars = (char *)malloc(width * height * sizeof(char));
 
   for (int i = 0; i < buffer.width * buffer.height; i++)
   {
-    buffer.chars[i] = L' ';
+    buffer.chars[i] = ' ';
   }
 
   if (border)
@@ -64,7 +64,7 @@ void clearRenderBuffer(struct RenderBuffer *buffer, bool border)
 {
   for (int i = 0; i < buffer->width * buffer->height; i++)
   {
-    buffer->chars[i] = L' ';
+    buffer->chars[i] = ' ';
   }
 
   if (border)
@@ -76,14 +76,14 @@ void freeRenderBuffer(struct RenderBuffer *buffer)
   free(buffer->chars);
 }
 
-struct RenderShape addShape(struct RenderBuffer *buffer, const wchar_t *shapeStr, int x, int y)
+struct RenderShape addShape(struct RenderBuffer *buffer, const char *shapeStr, int x, int y)
 {
   struct RenderShape shape;
   shape.pixelCount = 0;
 
-  for (int i = 0; shapeStr[i] != L'\0'; i++)
+  for (int i = 0; shapeStr[i] != '\0'; i++)
   {
-    if (shapeStr[i] != L'\n')
+    if (shapeStr[i] != '\n')
     {
       shape.pixelCount++;
     }
@@ -94,9 +94,9 @@ struct RenderShape addShape(struct RenderBuffer *buffer, const wchar_t *shapeStr
   int pixelIndex = 0;
   int xOffset = 0;
   int yOffset = 0;
-  for (int i = 0; shapeStr[i] != L'\0'; i++)
+  for (int i = 0; shapeStr[i] != '\0'; i++)
   {
-    if (shapeStr[i] != L'\n')
+    if (shapeStr[i] != '\n')
     {
       shape.pixels[pixelIndex].c = shapeStr[i];
       shape.pixels[pixelIndex].x = x + xOffset;

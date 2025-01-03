@@ -53,14 +53,22 @@ void updateSnakePosition(struct RenderBuffer *buffer, struct Snake *snake)
   if (!inBounds(buffer, snake->body[0].x, snake->body[0].y, MAP_BORDER))
   {
     if (snake->body[0].x < 0)
+    {
       snake->body[0].x = buffer->width - 1;
+    }
     else if (snake->body[0].x >= buffer->width)
+    {
       snake->body[0].x = 0;
+    }
 
     if (snake->body[0].y < 0)
+    {
       snake->body[0].y = buffer->height - 1;
+    }
     else if (snake->body[0].y >= buffer->height)
+    {
       snake->body[0].y = 0;
+    }
   }
 }
 
@@ -68,29 +76,29 @@ void addSnakeToRenderBuffer(struct RenderBuffer *buffer, struct Snake *snake)
 {
   for (int i = 0; i < snake->length; i++)
   {
-    char c = L' ';
-    if (i == 0)
+    char c = ' ';
+    if (i == 0) // Head
+      c = 'O';
+    else if (i == snake->length - 1) // Tail
     {
       switch (snake->direction)
       {
       case UP:
-        c = L'^';
+        c = 'v';
         break;
       case LEFT:
-        c = L'<';
+        c = '>';
         break;
       case DOWN:
-        c = L'v';
+        c = '^';
         break;
       case RIGHT:
-        c = L'>';
+        c = '<';
         break;
       }
     }
-    else if (i == snake->length - 1)
-      c = L'o';
-    else
-      c = L'O';
+    else // Body
+      c = '#';
 
     addChar(buffer, snake->body[i].x, snake->body[i].y, c);
   }

@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
-#include <locale.h>
 
 #include "game/snake.h"
 
@@ -13,7 +12,6 @@ void interruptHandler(int sig)
 
 int main()
 {
-  setlocale(LC_ALL, ""); // Set the locale to support wide characters
   signal(SIGINT, interruptHandler);
 
   printf("\033[2J");   // Clear the console
