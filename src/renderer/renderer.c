@@ -4,6 +4,16 @@
 
 #include "renderer.h"
 
+const char *RED = "\033[31m";
+const char *GREEN = "\033[32m";
+const char *YELLOW = "\033[33m";
+const char *BLUE = "\033[34m";
+const char *MAGENTA = "\033[35m";
+const char *CYAN = "\033[36m";
+const char *DIMMED = "\033[2m";
+const char *BLINKING = "\033[5m";
+const char *RESET = "\033[0m";
+
 bool inBounds(struct RenderBuffer *buffer, int x, int y, bool border)
 {
   if (border)
@@ -20,6 +30,15 @@ void addChar(struct RenderBuffer *buffer, int x, int y, char c)
   buffer->pixels[y * buffer->width + x].c = c;
 }
 
+void addColoredChar(struct RenderBuffer *buffer, int x, int y, char c, const char *colorEscapeCode)
+{
+  if (!inBounds(buffer, x, y, false))
+    return;
+
+  buffer->pixels[y * buffer->width + x].c = c;
+  buffer->pixels[y * buffer->width + x].colorEscapeCode = colorEscapeCode;
+}
+
 void clearChar(struct RenderBuffer *buffer, int x, int y)
 {
   addChar(buffer, x, y, ' ');
@@ -28,18 +47,18 @@ void clearChar(struct RenderBuffer *buffer, int x, int y)
 void _addBorder(struct RenderBuffer *buffer)
 {
   for (int x = 0; x < buffer->width; x++)
-    addChar(buffer, x, 0, '-');
+    addColoredChar(buffer, x, 0, '-', DIMMED);
   for (int x = 0; x < buffer->width; x++)
-    addChar(buffer, x, buffer->height - 1, '-');
+    addColoredChar(buffer, x, buffer->height - 1, '-', DIMMED);
   for (int y = 0; y < buffer->height; y++)
-    addChar(buffer, 0, y, '|');
+    addColoredChar(buffer, 0, y, '|', DIMMED);
   for (int y = 0; y < buffer->height; y++)
-    addChar(buffer, buffer->width - 1, y, '|');
+    addColoredChar(buffer, buffer->width - 1, y, '|', DIMMED);
 
-  addChar(buffer, 0, 0, '+');
-  addChar(buffer, buffer->width - 1, 0, '+');
-  addChar(buffer, 0, buffer->height - 1, '+');
-  addChar(buffer, buffer->width - 1, buffer->height - 1, '+');
+  addColoredChar(buffer, 0, 0, '+', DIMMED);
+  addColoredChar(buffer, buffer->width - 1, 0, '+', DIMMED);
+  addColoredChar(buffer, 0, buffer->height - 1, '+', DIMMED);
+  addColoredChar(buffer, buffer->width - 1, buffer->height - 1, '+', DIMMED);
 }
 
 struct RenderBuffer createRenderBuffer(int width, int height, bool border)
@@ -51,7 +70,10 @@ struct RenderBuffer createRenderBuffer(int width, int height, bool border)
 
   for (int i = 0; i < buffer.width * buffer.height; i++)
   {
+    buffer.pixels[i].x = i % buffer.width;
+    buffer.pixels[i].y = i / buffer.width;
     buffer.pixels[i].c = ' ';
+    buffer.pixels[i].colorEscapeCode = RESET;
   }
 
   if (border)
@@ -160,6 +182,6 @@ void render(struct RenderBuffer *buffer)
       printf("\n");
     }
 
-    putwchar(buffer->pixels[i].c);
+    printf("%s%c%s", buffer->pixels[i].colorEscapeCode, buffer->pixels[i].c, RESET);
   }
 }

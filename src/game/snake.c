@@ -82,13 +82,15 @@ void addSnakeToRenderBuffer(struct RenderBuffer *buffer, struct Snake *snake)
     else
       c = '#'; // Tail
 
-    addChar(buffer, snake->body[i].x, snake->body[i].y, c);
+    addColoredChar(buffer, snake->body[i].x, snake->body[i].y, c, GREEN);
   }
 }
 
 void addFoodToRenderBuffer(struct RenderBuffer *buffer, struct RenderPixel *food)
 {
-  addChar(buffer, food->x, food->y, '@');
+  char *blinking = strdup(BLINKING);
+  const char *blinkingYellowColorCode = strcat(blinking, YELLOW);
+  addColoredChar(buffer, food->x, food->y, '@', blinkingYellowColorCode);
 }
 
 struct RenderPixel spawnFoodOnRandomPosition(struct RenderBuffer *buffer)
@@ -170,7 +172,7 @@ void startGame()
 
     if (checkIfSnakeHitItself(&snake))
     {
-      printf("\nGame Over! Score: %d\n", score);
+      printf("\n%sGame Over! Score: %d%s\n", YELLOW, score, RESET);
       break;
     }
 
@@ -181,7 +183,7 @@ void startGame()
 
       if (snake.length >= MAX_SNAKE_LENGTH)
       {
-        printf("\nYou won! Score: %d\n", score);
+        printf("\n%sYou won! Score: %d%s\n", YELLOW, score, RESET);
         break;
       }
 
