@@ -31,6 +31,37 @@ struct Snake
   int length;
 };
 
+void handleInput(struct Snake *snake)
+{
+  if (_kbhit())
+  {
+    char ch = _getch();
+    switch (ch)
+    {
+    case 'w':
+    case 'W':
+      if (snake->direction != DOWN)
+        snake->direction = UP;
+      break;
+    case 'a':
+    case 'A':
+      if (snake->direction != RIGHT)
+        snake->direction = LEFT;
+      break;
+    case 's':
+    case 'S':
+      if (snake->direction != UP)
+        snake->direction = DOWN;
+      break;
+    case 'd':
+    case 'D':
+      if (snake->direction != LEFT)
+        snake->direction = RIGHT;
+      break;
+    }
+  }
+}
+
 void updateSnakePosition(struct RenderBuffer *buffer, struct Snake *snake)
 {
   for (int i = snake->length - 1; i > 0; i--)
@@ -144,35 +175,7 @@ void startGame()
   while (1)
   {
     clearRenderBuffer(&buffer, MAP_BORDER);
-
-    if (_kbhit())
-    {
-      char ch = _getch();
-      switch (ch)
-      {
-      case 'w':
-      case 'W':
-        if (snake.direction != DOWN)
-          snake.direction = UP;
-        break;
-      case 'a':
-      case 'A':
-        if (snake.direction != RIGHT)
-          snake.direction = LEFT;
-        break;
-      case 's':
-      case 'S':
-        if (snake.direction != UP)
-          snake.direction = DOWN;
-        break;
-      case 'd':
-      case 'D':
-        if (snake.direction != LEFT)
-          snake.direction = RIGHT;
-        break;
-      }
-    }
-
+    handleInput(&snake);
     updateSnakePosition(&buffer, &snake);
 
     if (checkIfSnakeHitItself(&snake))

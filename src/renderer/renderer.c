@@ -35,8 +35,9 @@ void addColoredChar(struct RenderBuffer *buffer, int x, int y, char c, const cha
   if (!inBounds(buffer, x, y, false))
     return;
 
-  buffer->pixels[y * buffer->width + x].c = c;
-  buffer->pixels[y * buffer->width + x].colorEscapeCode = colorEscapeCode;
+  int index = y * buffer->width + x;
+  buffer->pixels[index].c = c;
+  buffer->pixels[index].colorEscapeCode = colorEscapeCode;
 }
 
 void clearChar(struct RenderBuffer *buffer, int x, int y)
