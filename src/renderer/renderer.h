@@ -3,18 +3,18 @@
 
 #include <stdbool.h>
 
-struct RenderBuffer
-{
-  int width;
-  int height;
-  char *chars;
-};
-
 struct RenderPixel
 {
   char c;
   int x;
   int y;
+};
+
+struct RenderBuffer
+{
+  int width;
+  int height;
+  struct RenderPixel *pixels;
 };
 
 struct RenderShape
