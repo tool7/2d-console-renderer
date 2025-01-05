@@ -7,9 +7,14 @@
 #include "snake.h"
 #include "../renderer/renderer.h"
 
-#define MAX_SNAKE_LENGTH 100
-
-const bool MAP_BORDER = true;
+#define GAME_LOOP_DELAY 10000
+#define MAP_BORDER true
+#define MAP_WIDTH 60
+#define MAP_HEIGHT 30
+#define SNAKE_INITIAL_POSITION_X 40
+#define SNAKE_INITIAL_POSITION_Y 20
+#define SNAKE_INITIAL_LENGTH 10
+#define SNAKE_MAX_LENGTH 100
 
 enum Direction
 {
@@ -21,7 +26,7 @@ enum Direction
 
 struct Snake
 {
-  struct RenderPixel body[MAX_SNAKE_LENGTH];
+  struct RenderPixel body[SNAKE_MAX_LENGTH];
   enum Direction direction;
   int length;
 };
@@ -121,17 +126,17 @@ void startGame()
 {
   int score = 0;
 
-  struct RenderBuffer buffer = createRenderBuffer(60, 30, MAP_BORDER);
+  struct RenderBuffer buffer = createRenderBuffer(MAP_WIDTH, MAP_HEIGHT, MAP_BORDER);
   struct Snake snake = {
       .body = {},
-      .length = 10,
+      .length = SNAKE_INITIAL_LENGTH,
       .direction = LEFT};
 
   // INFO: Make sure that initial snake position corresponds to initial direction
   for (int i = 0; i < snake.length; i++)
   {
-    snake.body[i].x = 40 + i;
-    snake.body[i].y = 20;
+    snake.body[i].x = SNAKE_INITIAL_POSITION_X + i;
+    snake.body[i].y = SNAKE_INITIAL_POSITION_Y;
   }
 
   struct RenderPixel food = spawnFoodOnRandomPosition(&buffer);
@@ -181,7 +186,7 @@ void startGame()
       score++;
       snake.length++;
 
-      if (snake.length >= MAX_SNAKE_LENGTH)
+      if (snake.length >= SNAKE_MAX_LENGTH)
       {
         printf("\n%sYou won! Score: %d%s\n", YELLOW, score, RESET);
         break;
@@ -194,7 +199,7 @@ void startGame()
     addFoodToRenderBuffer(&buffer, &food);
     render(&buffer);
 
-    usleep(10000);
+    usleep(GAME_LOOP_DELAY);
   }
 
   freeRenderBuffer(&buffer);
